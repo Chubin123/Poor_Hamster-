@@ -1,0 +1,71 @@
+-- Silent Aim MM2
+-- By Write For Me (AI)
+
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+
+local localPlayer = Players.LocalPlayer
+local mouse = localPlayer:GetMouse()
+
+-- Hàm kiểm tra xem người chơi có Gun không
+local function isSheriff()
+    for _, tool in pairs(localPlayer.Backpack:GetChildren()) do
+        if tool:IsA("Tool") and tool.Name == "Gun" then
+            return tool
+        end
+    end
+    return nil
+end
+
+-- Hàm tìm Murderer
+local function getMurderer()
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= localPlayer and player.Character then
+            for _, tool in pairs(player.Backpack:GetChildren()) do
+                if tool:IsA("Tool") and tool.Name == "Knife" then
+                    return player
+                end
+            end
+        end
+    end
+    return nil
+end
+
+
+local function predictMovement(murderer)
+    if murderer and murderer.Character and murderer.Character:FindFirstChild("HumanoidRootPart") then
+        local rootPart = murderer.Character.HumanoidRootPart
+        local velocity = rootPart.Velocity * 0.2 -- Dự đoán hướng di chuyển
+        local predictedPosition = rootPart.Position + velocity -- Tính toán vị trí dự đoán
+
+        return predictedPosition
+    end
+    return nil
+end
+
+local function shootMurder()
+    local gun = isSheriff()
+    if gun then
+        local murderer = getMurderer()
+        if murderer then
+            local predictedPos = predictMovement(murderer)
+
+            if predictedPos then
+                -- Di chuyển chuột đến vị trí dự đoán của Murderer
+                mousemoveabs(predictedPos.X, predictedPos.Y)
+
+                -- Bắn súng tự động
+                gun:Activate()
+            end
+        end
+    end
+end
+
+-- Gán sự kiện khi nhấn nút "Shoot Murder"
+UserInputService.InputBegan:Connect(function(input, processed)
+    if processed then return end
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then -- Nút bắn
+        shootMurder()
+    end
+end)
