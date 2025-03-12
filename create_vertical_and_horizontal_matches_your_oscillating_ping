@@ -1,0 +1,87 @@
+local player = game.Players.LocalPlayer
+local pingSamples = {}
+local sampleCount = 5
+local delayTime = 1
+
+game:GetService("StarterGui"):SetCore("SendNotification", {
+    Title = "Progress",
+    Text = "Variables declared: Done",
+    Duration = 5
+})
+
+local function getPing()
+    local ping = game:GetService("Stats").Network.ServerStatsItem["Ping"]
+    if ping then
+        local pingValue = ping:GetValueString()
+        return tonumber(pingValue:match("%d+")) or 0
+    else
+        return 0
+    end
+end
+
+game:GetService("StarterGui"):SetCore("SendNotification", {
+    Title = "Progress",
+    Text = "Ping measurement function: Done",
+    Duration = 5
+})
+
+local function calculateAveragePing(samples)
+    local total = 0
+    for _, v in pairs(samples) do
+        total = total + v
+    end
+    return total / #samples
+end
+
+game:GetService("StarterGui"):SetCore("SendNotification", {
+    Title = "Progress",
+    Text = "Average ping calculation function: Done",
+    Duration = 5
+})
+
+for i = 1, sampleCount do
+    local ping = getPing()
+    table.insert(pingSamples, ping)
+    wait(delayTime)
+end
+
+game:GetService("StarterGui"):SetCore("SendNotification", {
+    Title = "Progress",
+    Text = "Ping sampling: Done",
+    Duration = 5
+})
+
+local avgPing = calculateAveragePing(pingSamples)
+
+game:GetService("StarterGui"):SetCore("SendNotification", {
+    Title = "Progress",
+    Text = "Average ping calculated: Done",
+    Duration = 5
+})
+
+local vertical, horizontal
+if avgPing <= 50 then
+    vertical = 50
+    horizontal = 45
+elseif avgPing <= 100 then
+    vertical = 65
+    horizontal = 60
+elseif avgPing <= 150 then
+    vertical = 80
+    horizontal = 75
+else
+    vertical = 100
+    horizontal = 90
+end
+
+game:GetService("StarterGui"):SetCore("SendNotification", {
+    Title = "Progress",
+    Text = "Vertical and Horizontal calculated: Done",
+    Duration = 5
+})
+
+game:GetService("StarterGui"):SetCore("SendNotification", {
+    Title = "Ping Results",
+    Text = "All steps completed | Ping: " .. avgPing .. "ms | Vertical: " .. vertical .. " | Horizontal: " .. horizontal,
+    Duration = 10
+})
