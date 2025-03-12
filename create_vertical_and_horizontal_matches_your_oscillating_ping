@@ -1,3 +1,5 @@
+-- This is a script for those who don't know how to adjust Vertical and Horizontal for themselves and their ping or simply because you are lazy :)
+-- If you know how to adjust, I recommend you to adjust it yourself because it will be better and more stable
 local player = game.Players.LocalPlayer
 local pingSamples = {}
 local sampleCount = 5
